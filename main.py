@@ -1,5 +1,5 @@
 import streamlit
-import ipaddress
+from ipaddress import ip_interface
 
 streamlit.title('IPアドレス計算')
 
@@ -20,10 +20,25 @@ subnet = streamlit.sidebar.selectbox(
     '/22', '/23', '/24', '/25', '/26', '/27', '/28',
     '/29', '/30', '/31', '/32'))
 
+ip = ip_interface(f'{first_octet}.{second_octet}.{third_octet}.{fourth_octet}{subnet}')
+network = ip.network.network_address
+
 streamlit.write(f'''
                 ### IPアドレス
-                #### {first_octet}.{second_octet}.{third_octet}.{fourth_octet}{subnet}''')
+                #### {first_octet}.{second_octet}.{third_octet}.{fourth_octet}{subnet}
+                ''')
+
+streamlit.write(f'''
+                ### ネットワークアドレス
+                #### {network}
+                ''')
+
+start_address = list(ip.network.hosts())[0]
+last_address = list(ip.network.hosts())[-1]
+
+streamlit.write(f'''
+                ### 使用可能アドレス
+                #### {start_address} ~ {last_address}
+                ''')
 
 
-come = ipaddress.ip_address('%sです。'%(ip))
-streamlit.title(come)
